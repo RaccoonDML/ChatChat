@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  {% load staticfiles %}
+  <script type='text/javascript' src='https://cdn.scaledrone.com/scaledrone.min.js'></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <style>
+    body {
+      display: flex;
+      height: 100vh;
+      margin: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 0 50px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    video {
+      max-width: calc(50% - 100px);
+      margin: 0 50px;
+      box-sizing: border-box;
+      border-radius: 2px;
+      padding: 0;
+      box-shadow: rgba(156, 172, 172, 0.2) 0px 2px 2px, rgba(156, 172, 172, 0.2) 0px 4px 4px, rgba(156, 172, 172, 0.2) 0px 8px 8px, rgba(156, 172, 172, 0.2) 0px 16px 16px, rgba(156, 172, 172, 0.2) 0px 32px 32px, rgba(156, 172, 172, 0.2) 0px 64px 64px;
+    }
+    .copy {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 16px;
+      color: rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="copy">如连接较慢请稍等片刻。</div>
+  <video id="localVideo" autoplay muted></video>
+  <video id="remoteVideo" autoplay></video>
+  <script type="text/javascript" src="{% static 'bootstrap/js/chat-with-friend.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bootstrap/js/jquery.min.js' %}"></script>
+  <script>
+      SendMsg();
+
+      function SendMsg(){
+        var contact_type =  'single';
+        var contact_id = {{ contact_id }};
+        //start if
+        if (contact_type && contact_id){
+            var msg_item={
+                'from':"{{ request.user.userprofile.id }}",
+                'from_name':"{{ request.user.userprofile.name }}",
+                'to': contact_id,
+                'type':contact_type,
+                'msg':location.href
+            };
+    //      $.post("{% url 'send_msg' %}",msg_item,function(callback){
+            $.post("{% url 'send_msg' %}",{data:JSON.stringify(msg_item)},function(callback){
+                console.log(callback)
+            });//end post
+        }
+        //end if
+    }
+  </script>
+</body>
+</html>
