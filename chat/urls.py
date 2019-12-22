@@ -10,5 +10,6 @@ urlpatterns = [
     path('file_upload/',views.file_upload,name='file_uploads' ),
     path('login/', views.user_login_view, name='login'),
     path('logout/',views.user_logout_view, name='logout'),
-    path('vedio-chat/', views.vedio_chat, name='vedio_chat')
+    path('vedio-chat/', views.vedio_chat, name='vedio_chat'),
+    path('file_down/<str:name>', views.download, name='file_down')
 ]

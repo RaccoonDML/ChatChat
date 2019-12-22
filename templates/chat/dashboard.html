@@ -1,72 +1,100 @@
 {% extends 'base.html' %}
 
 {% block page-container%}
-<div class="chat-container">
-    <div class="left-contact-panel">
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-          <li role="presentation" class="active"><a href="#contact-tab" role="tab" data-toggle="tab">好友</a></li>
-          <li role="presentation"><a href="#group-tab" role="tab" data-toggle="tab">分组</a></li>
+<div class="container2">
+
+    <div class="leftbar">
+        <ul>
+            <li><i class="fas fa-user"></i></li>
+            <li><i class="fas fa-users"></i></li>
+            <li><i class="fas fa-smile"></i></li>
+            <li><i class="fas fa-envelope"></i></li>
+            <li><i class="fas fa-bell"></i></li>
+            <li><i class="fas fa-calendar-alt"></i></li>
+            <li><i class="fas fa-power-off"></i></li>
         </ul>
-
-        <!-- Tab panes -->
-        <div class="tab-content">
-          <div role="tabpanel" class="tab-pane active" id="contact-tab">
-              <ul class="list-group">
-                {% for friend in request.user.userprofile.friends.select_related %}
-                  <li contact-type='single' contact-id='{{friend.id}}' onclick="OpenChatWindow(this)" class="list-group-item">
-                      <span class="badge hide">0</span>
-                      <span class="contact-name">{{friend.name}}</span>
-                  </li>
-                {% endfor%}
-              </ul>
-          </div>
-          <div role="tabpanel" class="tab-pane" id="group-tab">
-            <ul class="list-group">
-                {% for group in request.user.userprofile.group_members.select_related%}
-                    <li contact-type='group' contact-id="{{group.id}}" onclick="OpenChatWindow(this)" class="list-group-item">
-                        <span class="badge hide">0</span>
-                        <span class="contact-name">{{ group.name }}</span>
-                    </li>
-
-                {% endfor%}
-            </ul>
-          </div>
-        </div>
     </div>
-    <div class="right-chat-panel">
-        <div class="chat-box-title" contact-id = "" contact-type="">
-            title
+
+    <div class="chatbox">
+        <div class="chatleft">
+            <div class="top">
+                <i class="fas fa-bars" style="font-size: 1.4em"></i>
+                <input type="text" placeholder="search" style="width: 140px; height: 36px; margin-left: 25px;">
+                <button class="btn searchbtn"><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="center">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#contact-tab" role="tab" data-toggle="tab">好友</a></li>
+                    <li role="presentation"><a href="#group-tab" role="tab" data-toggle="tab">分组</a></li>
+                </ul>
+
+                <div class="tab-content" onclick="clickp()">
+                    <div role="tabpanel" class="tab-pane active" id="contact-tab">
+                        <ul class="list-group">
+                            {% for friend in request.user.userprofile.friends.select_related %}
+                                <li contact-type='single' contact-id='{{friend.id}}' onclick="OpenChatWindow(this)" class="list-group-item">
+                                    <span class="badge hide">0</span>
+                                    <img style="border-radius: 20px; vertical-align: middle;" src="http://placehold.it/40x40">
+                                    <span class="contact-name" style="margin-left: 20px;">{{friend.name}}</span>
+                                </li>
+                            {% endfor%}
+                        </ul>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="group-tab">
+                        <ul class="list-group">
+                            {% for group in request.user.userprofile.group_members.select_related%}
+                                <li contact-type='group' contact-id="{{group.id}}" onclick="OpenChatWindow(this)" class="list-group-item">
+                                    <span class="badge hide">0</span>
+                                    <img style="border-radius: 20px; vertical-align: middle;" src="http://placehold.it/40x40">
+                                    <span class="contact-name" style="margin-left: 20px;">{{group.name}}</span>
+                                </li>
+                            {% endfor%}
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="chat-box-window">
-            window
-        </div>
-        <div class="chat-box-emoj">
-            <!--emoj-->
-            <div class="col-md-3">
-                <input id="file_upload" name="filename" type="file">
-                <span class="glyphicon glyphicon-upload" onclick="UploadFiles()">发送</span>
-                <form id="form1" name="form1" action="" method="post">
-                    <input type="button" value="视频聊天" onclick="vidioCall()" />
+
+        <div class="chatright" id="chatright" style="display: none">
+            <div class="top">
+                <img style="border-radius: 20px; vertical-align: middle;" src="http://placehold.it/40x40">
+                <span class="chat-box-title" contact-id = "" contact-type="" style="margin-left: 20px; margin-top:30px;"></span>
+                <i class="fas fa-ellipsis-v" contact-id = "" contact-type="" style="font-size: 1.4em; position: absolute; right: 20px; color: gray;"></i>
+            </div>
+
+            <div class="chat-box-window">
+
+            </div>
+
+            <div class="bottom">
+                <input id="file_upload" style="float:left;" name="filename" type="file">
+                <button class="btn filebtn" style="float:left;" onclick="UploadFiles()">发送文件</button>
+                <form id="form1" style="float:left;" name="form1" action="" method="post">
+                    {% csrf_token %}
+                    <button class="btn videobtn"  style="float:left; " onclick="videoCall()" />视频聊天</button>
                     <input type="text" id="contact_id" name="contact_id" style="display: none" value="">
                     <input type="text" id="contact_type" name="contact_type" style="display: none" value="">
                 </form>
             </div>
 
+            <div class="foot">
+                <textarea name="" id="msg" maxlength="800" rows="5" cols="40" style="width: 100%; resize: none; border: none; " placeholder="请在此输入要发送的内容..."></textarea>
+                <button class="btn sendbtn" onclick="ClickSend()">发送消息</button>
+            </div>
+        </div>
+
+        <div class="clear-both"></div>
 
         </div>
-        <div class="chat-box-msg-box">
-            <textarea name="" id="msg" ></textarea>
-            <button class="btn btn-success" onclick="ClickSend()">发送消息</button>
-        </div>
 
-    </div>
-    <div class="clear-both"></div>
-</div>
 {% endblock %}
 
 {% block bottom-js %}
 <script>
+     function clickp() {
+         document.getElementById("chatright").style.display="block";
+     }
     // for csrf
     // using jQuery
     function getCookie(name) {
@@ -167,12 +195,13 @@ GLOBAL_CHAT_RECORD_DIC = {
         //end if
     }
 
-    function vidioCall() {
+    function videoCall() {
         var contact_type = $(".chat-box-title").attr("contact-type");
         var contact_id = $(".chat-box-title").attr("contact-id");
         document.form1.contact_id.value=contact_id
         document.form1.contact_type.value=contact_type
         var url="../vedio-chat/";
+
         document.form1.action=url;
         var newwin = window.open('about:blank', 'newWindow', 'height=800px,width=1200px,top=0,left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
         document.form1.target = 'newWindow';//这一句是关键
@@ -180,14 +209,48 @@ GLOBAL_CHAT_RECORD_DIC = {
     }
 
 
-
-    function AddSentMsgIntoBox(msg_tex){
-        var new_msg_ele = "<div class='msg-item'>" +
+    function AddVideoMsgIntoBox(href) {
+        var href=''
+        SendMsg(href)
+        var new_msg_ele = "<div class='msg-item' >" +
                             "<span>"+ "{{ request.user.userprofile.name }}"+"</span>" +
-                            "<span>"+ new Date().toLocaleTimeString()+"</span>" +
-                            "<div class='msg-text'>" + msg_tex + "</div>" +
+                            "<span>"+"   " + new Date().toLocaleTimeString()+"</span>" +
+                            "<div class='msg-text'>"+ "<a href='javascript:void(0);' onclick='videoCall()'>视频聊天</a> " + "<img style='border-radius: 20px; vertical-align: middle;' src='http://placehold.it/40x40'>"+"</img>"+"</div>" +
                           "</div>";
         $(".chat-box-window").append(new_msg_ele);
+        $(".chat-box-window").animate({scrollTop:$('.chat-box-window').height()},500)
+    }
+    function AddSentMsgIntoBox(msg_tex){
+
+        var new_msg_ele = "<div class='msg-item' >" +
+                            "<span>"+ "{{ request.user.userprofile.name }}"+"</span>" +
+                            "<span>"+"   " + new Date().toLocaleTimeString()+"</span>" +
+                            "<div class='msg-text'>" + msg_tex + "   " + "<img style='border-radius: 20px; vertical-align: middle;' src='http://placehold.it/40x40'>"+"</img>"+"</div>" +
+                          "</div>";
+        var info=new_msg_ele;
+        var subfile="file";
+        var subvideo="vedio";
+
+        if (info.includes(subfile)) {//file link
+                new_msg_ele = "<div class='msg-item' >" +
+                            "<span>"+ "{{ request.user.userprofile.name }}"+"</span>" +
+                            "<span>"+"   " + new Date().toLocaleTimeString()+"</span>" +
+                            "<div class='msg-text'>" + "你向对方发送了文件……   " + "<img style='border-radius: 20px; vertical-align: middle;' src='http://placehold.it/40x40'>"+"</img>"+"</div>" +
+                          "</div>";
+                $(".chat-box-window").append(new_msg_ele);
+                $(".chat-box-window").animate({scrollTop:$('.chat-box-window').height()},500)
+        }
+        else if (info.includes(subvideo)) {//video link
+                new_msg_ele = "<div class='msg-item' >" +
+                            "<span>"+ "{{ request.user.userprofile.name }}"+"</span>" +
+                            "<span>"+"   " + new Date().toLocaleTimeString()+"</span>" +
+                            "<div class='msg-text'>" + "你邀请对方视频聊天……   " + "<img style='border-radius: 20px; vertical-align: middle;' src='http://placehold.it/40x40'>"+"</img>"+"</div>" +
+                          "</div>";
+                $(".chat-box-window").append(new_msg_ele);
+                $(".chat-box-window").animate({scrollTop:$('.chat-box-window').height()},500)
+        }
+        else {//text msg
+            $(".chat-box-window").append(new_msg_ele);
 
         // 动画效果滑动
 //        console.log($('.chat-box-window')[0]);
@@ -196,7 +259,8 @@ GLOBAL_CHAT_RECORD_DIC = {
 
 //        console.log($('.chat-box-window'));
 //        console.log($('.chat-box-window')[0]);
-        $(".chat-box-window").animate({scrollTop:$('.chat-box-window').height()},500)
+            $(".chat-box-window").animate({scrollTop:$('.chat-box-window').height()},500)
+        }
     }
 
     function OpenChatWindow(ele){
@@ -257,12 +321,34 @@ GLOBAL_CHAT_RECORD_DIC = {
             console.log(callback[i]); //循环出来的是一个索引
             //前端打印结果是 Object {msg: "↵45", from: "1", to: "2", type: "single", timestamp: 1476167618.588683}
             // 现在我们要把这个object拼接成前端的html代码.
-            var new_msg_ele = "<div class='msg-item'>" +
-                        "<span>"+ callback[i].from_name +"</span>" +
-                        "<span>"+ callback[i].timestamp+"</span>" +
-                        "<div class='msg-text'>" + callback[i].msg + "</div>" +
-                      "</div>";
-
+            {#callback[i].msg #}
+            var info=callback[i].msg;
+            var subfile="file";
+            var subvideo="vedio";
+            var new_msg_ele;
+            var file_flag=0;
+            var video_flag=0;
+            if (info.includes(subfile)) {//file link
+                new_msg_ele = "<div class='msg-item2' id='kk'>" +
+                        "<span>" + callback[i].from_name + "</span>" +
+                        "<span>" + "   " + new Date().toLocaleTimeString() + "</span>" +
+                        "<div class='msg-text'>" + "<img style='border-radius: 20px; vertical-align: middle;' src='http://placehold.it/40x40'>" + "</img>" + "   对方向您发来一个文件  " + "<a target='_blank' href='http://" + info + "'>接收</a>" + "</div>" +
+                        "</div>";
+            }
+            else if (info.includes(subvideo)) {//video link
+                new_msg_ele = "<div class='msg-item2' id='kk'>" +
+                        "<span>" + callback[i].from_name + "</span>" +
+                        "<span>" + "   " + new Date().toLocaleTimeString() + "</span>" +
+                        "<div class='msg-text'>" + "<img style='border-radius: 20px; vertical-align: middle;' src='http://placehold.it/40x40'>" + "</img>" + "   对方邀请您视频聊天  " + "<a target='_blank' href='"+ info + "'>接受</a>" + "</div>" +
+                        "</div>";
+            }
+            else {//text msg
+                new_msg_ele = "<div class='msg-item2' >" +
+                        "<span>" + callback[i].from_name + "</span>" +
+                        "<span>" + "   " + new Date().toLocaleTimeString() + "</span>" +
+                        "<div class='msg-text'>" + "<img style='border-radius: 20px; vertical-align: middle;' src='http://placehold.it/40x40'>" + "</img>" + "   " + callback[i].msg+ "</div>" +
+                        "</div>";
+            }
             if (callback[i].type == "single"){
                 var msg_from_contact_id = callback[i]['from'];
             } else {
@@ -271,6 +357,7 @@ GLOBAL_CHAT_RECORD_DIC = {
 
             if (msg_from_contact_id == current_session_id && callback[i].type == current_session_type){
                 //代表此消息的发送方是当前打开的消息窗口所属的对象
+                console.log(callback[i].msg);
                 $(".chat-box-window").append(new_msg_ele)
             } else {
                 //此消息的发送方 不是当前打开的消息窗口所属的对象
@@ -279,7 +366,6 @@ GLOBAL_CHAT_RECORD_DIC = {
                 } else {
                     GLOBAL_CHAT_RECORD_DIC[callback[i].type][msg_from_contact_id] = new_msg_ele
                 }//end if
-
                 // 新消息提醒
                 var contact_ele = $(".list-group li[contact-type='"+ callback[i].type +"']").filter("li[contact-id="+ msg_from_contact_id +"]")[0]
                 var current_new_msg_num = $(contact_ele).find(".badge").text();
@@ -290,11 +376,30 @@ GLOBAL_CHAT_RECORD_DIC = {
 
         }
     }
+
+    function AddFileMsgIntoBox(msg_tex){
+
+        var new_msg_ele = "<div class='msg-item' >" +
+                            "<span>"+ "{{ request.user.userprofile.name }}"+"</span>" +
+                            "<span>"+"   " + new Date().toLocaleTimeString()+"</span>" +
+                            "<div class='msg-text'>" + "<a href='127.0.0.1:8000/file_down/'>文件</a>" + "   " + "<img style='border-radius: 20px; vertical-align: middle;' src='http://placehold.it/40x40'>"+"</img>"+"</div>" +
+                          "</div>";
+        $(".chat-box-window").append(new_msg_ele)
+        $(".chat-box-window").animate({scrollTop:$('.chat-box-window').height()},500)
+    }
     function UploadFiles(){
         var formData = new FormData();
-        console.log($('#file_upload')[0].files[0]);
-        formData.append('file',$('#file_upload')[0].files[0]);
-
+        var arr = new Array();
+        var href = '';
+        arr = location.href.split("/");
+        for (i = 1; i < arr.length - 2; i++)
+        {
+            href += arr[i];
+        }
+        href += "/";
+        href += "file_down/"
+        href += $('#file_upload')[0].files[0]['name'];
+        formData.append('file',$('#file_upload')[0].files[0])
         $.ajax({
             url: "{% url 'file_uploads' %}",
             type: 'POST',
@@ -303,9 +408,11 @@ GLOBAL_CHAT_RECORD_DIC = {
             contentType: false,
             success: function(data){
                 console.log(data);
-                //alert(data);
+            //alert(data);
             }
         });
+        SendMsg(href);
+        AddSentMsgIntoBox(href);
     }
 
 </script>

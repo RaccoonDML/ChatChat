@@ -12,7 +12,7 @@
 
     <link rel="icon" href="https://v3.bootcss.com/favicon.ico">
 
-    <title>Non-responsive Template for Bootstrap</title>
+    <title>ChatChat</title>
 
 
     {% block mycss %}
@@ -28,7 +28,9 @@
 
     <!-- Custom styles for this template -->
     <link href="{% static 'bootstrap/css/non-responsive.css' %}" rel="stylesheet">
-
+    <link rel="stylesheet" href="{% static "huiting.css" %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+        crossorigin="anonymous">
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="{% static 'bootstrap/js/ie-emulation-modes-warning.js' %}"></script>
@@ -83,11 +85,11 @@
     </nav>
 
 
-    <div class="page-container">
+{#    <div class="page-container">#}
     {% block page-container %}
 
     {% endblock %}
-    </div>
+{#    </div>#}
 
 
     <!-- Bootstrap core JavaScript
