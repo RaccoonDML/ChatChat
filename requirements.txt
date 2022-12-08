@@ -1,4 +1,4 @@
-certifi==2018.8.24
+certifi==2022.12.7
 Django==2.0.5
 django-bootstrap3==11.1.0
 pytz==2019.3
